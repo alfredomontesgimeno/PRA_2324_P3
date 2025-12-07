@@ -6,10 +6,7 @@
 #include <string>
 #include "Dict.h"
 #include "TableEntry.h"
-#include "ListLinked.h"
-#include "List.h"
-#include "Node.h"
-#include "ListArray.h"
+#include "../PRA_2324_P1/ListLinked.h"
 
 template <typename V>
 class HashTable : public Dict<V> {
@@ -99,17 +96,26 @@ public:
     }
 
     // Sobrecarga del operador <<
-    friend std::ostream& operator<<(std::ostream &out, const HashTable<V> &th) {
-        out << "HashTable con " << th.n << " elementos y capacidad " << th.max << "\n";
-        for (int i = 0; i < th.max; i++) {
-            out << "Cubeta " << i << ": ";
-            for (int j = 0; j < th.table[i].size(); j++) {
-                out << th.table[i].get(j) << " ";
-            }
-            out << "\n";
+   friend std::ostream& operator<<(std::ostream &out, const HashTable<V> &th) {
+    out << "HashTable [entries: " << th.n << ", capacity: " << th.max << "]\n";
+    out << "==============\n\n";
+
+    for (int i = 0; i < th.max; i++) {
+        out << "== Cubeta " << i << " ==\n\n";
+        out << "List => [";
+        if (th.table[i].size() > 0) out << "\n";
+        for (int j = 0; j < th.table[i].size(); j++) {
+            out << "  " << th.table[i].get(j);
+            if (j < th.table[i].size() - 1) out << "\n";
         }
-        return out;
+        if (th.table[i].size() > 0) out << "\n";
+        out << "]\n\n";
     }
+
+    out << "==============\n";
+    return out;
+    }
+
 };
 
 #endif
