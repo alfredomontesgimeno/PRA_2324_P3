@@ -4,6 +4,7 @@
 
 #include <ostream>
 #include <stdexcept>
+#include <string>
 #include "Dict.h"
 #include "BSTree.h"
 #include "TableEntry.h"
@@ -12,59 +13,63 @@ template <typename V>
 class BSTreeDict: public Dict<V> {
 
     private:
-        // ABB con elementos de tipo TableEntry<V> para gestionar el diccionario.
+        // ABB con elementos de tipo TableEntry<V>
         BSTree<TableEntry<V>>* tree;
 
-        // (Opcional) ayudante para crear una entrada solo con clave
-        // Se usa V{} como valor por defecto cuando no es relevante (búsqueda/eliminación).
+        // Crea una entrada a partir de la clave (valor por defecto V{} si no se usa)
         static TableEntry<V> make_entry(const std::string& key, const V& value = V{}) {
             return TableEntry<V>(key, value);
         }
 
     public:
-        // Constructor: crea un ABB vacío con memoria dinámica.
-        BSTreeDict();
+        // Crea un ABB vacío con memoria dinámica
+        BSTreeDict() : tree(new BSTree<TableEntry<V>>()) {}
 
-        // Destructor: libera la memoria ocupada por el ABB.
+        // Libera la memoria del ABB
         ~BSTreeDict() {
             delete tree;
             tree = nullptr;
         }
 
-        // --- Métodos de la interfaz Dict<V> (implementación esperada) ---
+        // --- Implementación de la interfaz Dict<V> ---
 
-        // Inserta (key, value) en el diccionario; lanza si la clave ya existe.
+        // Inserta (key, value); lanza si la clave ya existe
         void insert(std::string key, V value) override {
             tree->insert(make_entry(key, value));
         }
 
-        // Elimina la entrada con la clave dada; lanza si no existe.
-        void remove(std::string key) override {
-            tree->remove(make_entry(key));
-        }
-
-        // Busca y devuelve el valor asociado a la clave; lanza si no existe.
-        V search(std::string key) const override {
+        // Elimina la clave y devuelve su valor; lanza si no existe
+        V remove(std::string key) override {
+            // Primero obtenemos la entrada (si no existe, search lanzará)
             TableEntry<V> te = tree->search(make_entry(key));
-            return te.value; // ajusta si tu TableEntry usa otro nombre (p.ej., te.val o te.getValue())
+            // Luego eliminamos por clave
+            tree->remove(make_entry(key));
+            // Devolvemos el valor eliminado
+            return te.value; // ajusta si tu TableEntry usa otro nombre (p.ej., te.val)
         }
 
-        // Devuelve el número de elementos del diccionario.
-        int size() const override {
+        // Busca y devuelve el valor; lanza si no existe
+        V search(std::string key) override {
+            TableEntry<V> te = tree->search(make_entry(key));
+            return te.value; // ajusta si tu TableEntry usa otro nombre
+        }
+
+        // Número de entradas del diccionario
+        int entries() override {
             return tree->size();
         }
 
         // --- Métodos propios solicitados ---
 
-        // Sobrecarga del operador << para imprimir el contenido del diccionario.
+        // Imprime el contenido del diccionario (delegando en el BSTree inorden)
         friend std::ostream& operator<<(std::ostream& out, const BSTreeDict<V>& bs) {
             if (bs.tree) {
-                out << *(bs.tree); // delega en el operator<< de BSTree (recorrido inorden)
+                out << *(bs.tree);
             }
             return out;
         }
 
-        // Sobrecarga del operador[]: interfaz a search(key).
+        // Operador[]: interfaz a search(key)
         V operator[](std::string key) {
             return this->search(key);
         }
