@@ -15,7 +15,7 @@ class BSTreeDict: public Dict<V> {
         BSTree<TableEntry<V>>* tree;
 
         // Crea una entrada a partir de la clave (valor por defecto V{} si no se usa)
-        /*static TableEntry<V> make_entry(const std::string& key, const V& value = V{}) {
+        static TableEntry<V> make_entry(const std::string& key, const V& value = V{}) {
             return TableEntry<V>(key, value);
         }
 */
@@ -32,7 +32,7 @@ class BSTreeDict: public Dict<V> {
         // --- Implementación de la interfaz Dict<V> ---
 
         // Inserta (key, value); lanza si la clave ya existe
-        /*void insert(std::string key, V value) override {
+        void insert(std::string key, V value) override {
             tree->insert(make_entry(key, value));
         }
 
@@ -74,4 +74,5 @@ class BSTreeDict: public Dict<V> {
 };
 
 #endif
+
 
