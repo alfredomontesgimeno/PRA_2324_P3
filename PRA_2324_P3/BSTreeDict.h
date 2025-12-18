@@ -15,10 +15,10 @@ class BSTreeDict: public Dict<V> {
         BSTree<TableEntry<V>>* tree;
 
         // Crea una entrada a partir de la clave (valor por defecto V{} si no se usa)
-        /*static TableEntry<V> make_entry(const std::string& key, const V& value = V{}) {
+        static TableEntry<V> make_entry(const std::string& key, const V& value = V{}) {
             return TableEntry<V>(key, value);
         }
-*/
+
     public:
         // Crea un ABB vacío con memoria dinámica
         BSTreeDict() : tree(new BSTree<TableEntry<V>>()) {}
@@ -56,7 +56,7 @@ class BSTreeDict: public Dict<V> {
         int entries() override {
             return tree->size();
         }
-*/
+
         // --- Métodos propios solicitados ---
 
         // Imprime el contenido del diccionario (delegando en el BSTree inorden)
